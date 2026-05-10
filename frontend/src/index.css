@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VulnScan — Premium Design System
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-base: #05080F;
+  --bg-surface: #090E1A;
+  --bg-card: #0C1220;
+  --bg-elevated: #111827;
+  --bg-glass: rgba(13, 19, 35, 0.7);
+
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(0,194,255,0.3);
+
+  --cyan: #00C2FF;
+  --cyan-dim: rgba(0,194,255,0.08);
+  --cyan-glow: rgba(0,194,255,0.2);
+  --red: #FF4455;
+  --red-dim: rgba(255,68,85,0.1);
+  --green: #00E5A0;
+  --green-dim: rgba(0,229,160,0.1);
+  --amber: #FFB547;
+
+  --text-1: #EEF2FF;
+  --text-2: #8896B3;
+  --text-3: #3D5070;
+
+  --font: 'Poppins', sans-serif;
+}
+
+/* ── Global Reset ───────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) var(--bg-base);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+::selection { background: rgba(0,194,255,0.25); color: var(--text-1); }
+::-moz-selection { background: rgba(0,194,255,0.25); color: var(--text-1); }
+
+/* ── Focus ──────────────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Keyframes ──────────────────────────────────────────────────────────── */
+
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(20px); }
+}
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes progress-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes fade-step {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float1 { animation: float1 8s ease-in-out infinite; }
+.animate-float2 { animation: float2 8s ease-in-out infinite; }
+.animate-blink { animation: blink-dot 1.5s ease-in-out infinite; }
+.animate-progress { animation: progress-sweep 1.8s linear infinite; }
+.animate-spin-slow { animation: spin-slow 4s linear infinite; }

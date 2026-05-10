@@ -1,0 +1,12 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "https://vulnerability-benchmark-system.vercel.app/",
+      "https://vuln-bench-mark-backend.vercel.app/"
+    ],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type", "x-goog-meta-*"],
+    "maxAgeSeconds": 3600
+  }
+]

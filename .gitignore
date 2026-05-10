@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+venv/
+.env
+.next/
+*.pyc
+.DS_Store
+uploads/
+joern/
+__MACOSX/
+workspace/
+*.sql

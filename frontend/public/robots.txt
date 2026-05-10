@@ -1,0 +1,7 @@
+# Generated from app/robots.ts
+
+User-agent: *
+Allow: /
+
+Sitemap: https://vulnerability-benchmark-system.vercel.app/sitemap.xml
+Host: https://vulnerability-benchmark-system.vercel.app
