@@ -132,22 +132,14 @@ export default function CveDetailPage() {
   }, [params.id]);
 
   // Theme classes
-  const pageBg = isDark
-    ? "[background:linear-gradient(to_bottom_right,_rgb(23,35,50)_75%,_rgb(76,29,109)_75%)]"
-    : "bg-[rgb(243,244,246)]";
-  const buttonBg = isDark
-    ? "bg-purple-800 hover:bg-purple-700 text-white"
-    : "bg-purple-400 hover:bg-purple-500 text-black"; // text black for light theme
-  const cardBg = isDark
-    ? "bg-[rgb(29,41,56)] border border-white/10"
-    : "bg-white border border-gray-200";
-  const tabBg = isDark
-    ? "bg-[rgb(29,41,56)] border border-white/10"
-    : "bg-white border border-gray-200";
-  const tabActiveBg = isDark ? "bg-[rgb(86,27,121)]" : "bg-purple-400"; // subtle bg for active light theme
-  const tabTextColor = isDark ? "text-white" : "text-black"; // always black/light theme
-  const textColor = isDark ? "text-white" : "text-gray-900";
-  const secondaryText = isDark ? "text-gray-300" : "text-gray-700";
+  const pageBg = "bg-[#0A0A0B]";
+  const buttonBg = "bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white border border-white/[0.08]";
+  const cardBg = "bg-[#111113] border border-white/[0.07]";
+  const tabBg = "bg-[#111113] border border-white/[0.07]";
+  const tabActiveBg = "bg-white";
+  const tabTextColor = "text-white";
+  const textColor = "text-white";
+  const secondaryText = "text-[#8A8A93]";
 
   return (
     <div className={`w-full min-h-screen relative overflow-hidden ${pageBg}`}>
@@ -155,28 +147,27 @@ export default function CveDetailPage() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <DashboardHeader />
         <div className="p-4 md:p-8">
-          {/* Back Button and AI Button Row */}
+          {/* Back Button */}
           <div className="flex items-center justify-between mb-4">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               className={`rounded-xl ${buttonBg}`}
               onClick={() => router.back()}
             >
-              <ArrowLeft className={`h-4 w-4 mr-2 ${tabTextColor}`} />
-              <span className={tabTextColor}>Back</span>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              <span>Back</span>
             </Button>
           </div>
           {/* Main content */}
-          {/* ...existing main content rendering logic here... */}
           {loading ? (
             <LoaderScreen />
           ) : error ? (
-            <div className="flex flex-col items-center justify-center h-[500px] text-destructive">
+            <div className="flex flex-col items-center justify-center h-[500px] text-rose-400">
               <ArrowLeft className="h-12 w-12 mb-4" />
               <p>{error}</p>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 className={`mt-4 rounded-xl ${buttonBg}`}
                 onClick={() => router.back()}
@@ -188,18 +179,18 @@ export default function CveDetailPage() {
             kernalData || githubData ? (
               <Tabs defaultValue="overview" className="w-full mt-4">
                 <div className="flex justify-between items-center">
-                  <div className={`mb-4 p-1 ${tabBg} rounded-2xl inline-flex`}>
-                    <TabsList className="bg-transparent border-none flex gap-2">
+                  <div className={`mb-4 p-1 ${tabBg} rounded-xl inline-flex`}>
+                    <TabsList className="bg-transparent border-none flex gap-1">
                       <TabsTrigger
                         value="overview"
-                        className="flex items-center justify-center px-4 py-2 rounded-xl text-sm border-none transition-colors duration-200 text-gray-700 dark:text-white/70 data-[state=active]:bg-purple-400 dark:data-[state=active]:bg-[rgb(86,27,121)] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+                        className="flex items-center justify-center px-4 py-1.5 rounded-lg text-sm border-none transition-colors duration-200 text-[#8A8A93] data-[state=active]:bg-white data-[state=active]:text-[#0A0A0B] data-[state=active]:font-semibold"
                       >
                         Details
                       </TabsTrigger>
                       {kernalData && (
                         <TabsTrigger
                           value="kernal"
-                          className="flex items-center justify-center px-4 py-2 rounded-xl text-sm border-none transition-colors duration-200 text-gray-700 dark:text-white/70 data-[state=active]:bg-purple-400 dark:data-[state=active]:bg-[rgb(86,27,121)] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+                          className="flex items-center justify-center px-4 py-1.5 rounded-lg text-sm border-none transition-colors duration-200 text-[#8A8A93] data-[state=active]:bg-white data-[state=active]:text-[#0A0A0B] data-[state=active]:font-semibold"
                         >
                           Kernel Data
                         </TabsTrigger>
@@ -207,7 +198,7 @@ export default function CveDetailPage() {
                       {githubData && (
                         <TabsTrigger
                           value="github"
-                          className="flex items-center justify-center px-4 py-2 rounded-xl text-sm border-none transition-colors duration-200 text-gray-700 dark:text-white/70 data-[state=active]:bg-purple-400 dark:data-[state=active]:bg-[rgb(86,27,121)] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+                          className="flex items-center justify-center px-4 py-1.5 rounded-lg text-sm border-none transition-colors duration-200 text-[#8A8A93] data-[state=active]:bg-white data-[state=active]:text-[#0A0A0B] data-[state=active]:font-semibold"
                         >
                           GitHub Data
                         </TabsTrigger>
@@ -248,65 +239,69 @@ export default function CveDetailPage() {
             id="ai-result"
             ref={aiResultRef}
           >
-            <div className={`${cardBg} rounded-2xl p-6 shadow-lg`}>
-              <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-300">
+            <div className={`${cardBg} rounded-xl p-6`}>
+              <h2 className="text-base font-semibold mb-4 text-white flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-violet-400" />
                 AI Analytics
               </h2>
               {aiError && (
-                <div className="text-destructive mb-4">{aiError}</div>
+                <div className="text-rose-400 text-sm mb-4">{aiError}</div>
               )}
               {typeof aiResult === "object" ? (
-                <div>
+                <div className="space-y-5">
                   {aiResult.summary && (
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                    <div>
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                         Summary
                       </h3>
-                      <div className="text-base text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                      <div className="text-sm text-[#E8E8EC] whitespace-pre-wrap leading-relaxed">
                         {aiResult.summary}
                       </div>
                     </div>
                   )}
                   {aiResult.riskLevel && (
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                    <div>
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                         Risk Level
                       </h3>
-                      <div className="text-base text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                      <div className="text-sm text-[#E8E8EC] whitespace-pre-wrap">
                         {aiResult.riskLevel}
                       </div>
                     </div>
                   )}
                   {aiResult.technicalImpact && (
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                    <div>
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                         Technical Impact
                       </h3>
-                      <div className="text-base text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                      <div className="text-sm text-[#E8E8EC] whitespace-pre-wrap leading-relaxed">
                         {aiResult.technicalImpact}
                       </div>
                     </div>
                   )}
                   {aiResult.exploitabilityAnalysis && (
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                    <div>
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                         Exploitability Analysis
                       </h3>
-                      <div className="text-base text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                      <div className="text-sm text-[#E8E8EC] whitespace-pre-wrap leading-relaxed">
                         {aiResult.exploitabilityAnalysis}
                       </div>
                     </div>
                   )}
                   {aiResult.affectedSystems &&
                     Array.isArray(aiResult.affectedSystems) && (
-                      <div className="mb-4">
-                        <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                      <div>
+                        <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                           Affected Systems
                         </h3>
-                        <ul className="list-disc pl-6 text-base text-gray-800 dark:text-gray-200">
+                        <ul className="space-y-1">
                           {aiResult.affectedSystems.map(
                             (item: string, idx: number) => (
-                              <li key={idx}>{item}</li>
+                              <li key={idx} className="text-sm text-[#E8E8EC] flex items-start gap-2">
+                                <span className="text-[#8A8A93] mt-0.5">—</span>
+                                {item}
+                              </li>
                             )
                           )}
                         </ul>
@@ -314,14 +309,17 @@ export default function CveDetailPage() {
                     )}
                   {aiResult.attackVectors &&
                     Array.isArray(aiResult.attackVectors) && (
-                      <div className="mb-4">
-                        <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                      <div>
+                        <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                           Attack Vectors
                         </h3>
-                        <ul className="list-disc pl-6 text-base text-gray-800 dark:text-gray-200">
+                        <ul className="space-y-1">
                           {aiResult.attackVectors.map(
                             (item: string, idx: number) => (
-                              <li key={idx}>{item}</li>
+                              <li key={idx} className="text-sm text-[#E8E8EC] flex items-start gap-2">
+                                <span className="text-[#8A8A93] mt-0.5">—</span>
+                                {item}
+                              </li>
                             )
                           )}
                         </ul>
@@ -329,14 +327,17 @@ export default function CveDetailPage() {
                     )}
                   {aiResult.topWeaknesses &&
                     Array.isArray(aiResult.topWeaknesses) && (
-                      <div className="mb-4">
-                        <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                      <div>
+                        <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                           Top Weaknesses
                         </h3>
-                        <ul className="list-disc pl-6 text-base text-gray-800 dark:text-gray-200">
+                        <ul className="space-y-1">
                           {aiResult.topWeaknesses.map(
                             (item: string, idx: number) => (
-                              <li key={idx}>{item}</li>
+                              <li key={idx} className="text-sm text-[#E8E8EC] flex items-start gap-2">
+                                <span className="text-[#8A8A93] mt-0.5">—</span>
+                                {item}
+                              </li>
                             )
                           )}
                         </ul>
@@ -344,25 +345,28 @@ export default function CveDetailPage() {
                     )}
                   {aiResult.recommendedActions &&
                     Array.isArray(aiResult.recommendedActions) && (
-                      <div className="mb-4">
-                        <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                      <div>
+                        <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                           Recommended Actions
                         </h3>
-                        <ul className="list-disc pl-6 text-base text-gray-800 dark:text-gray-200">
+                        <ul className="space-y-1">
                           {aiResult.recommendedActions.map(
                             (item: string, idx: number) => (
-                              <li key={idx}>{item}</li>
+                              <li key={idx} className="text-sm text-[#E8E8EC] flex items-start gap-2">
+                                <span className="text-violet-400 mt-0.5">→</span>
+                                {item}
+                              </li>
                             )
                           )}
                         </ul>
                       </div>
                     )}
                   {aiResult.longTermStrategy && (
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-1">
+                    <div>
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5">
                         Long Term Strategy
                       </h3>
-                      <div className="text-base text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                      <div className="text-sm text-[#E8E8EC] whitespace-pre-wrap leading-relaxed">
                         {aiResult.longTermStrategy}
                       </div>
                     </div>
@@ -383,16 +387,16 @@ export default function CveDetailPage() {
                     ];
                     if (shown.includes(key)) return null;
                     return (
-                      <div key={key} className="mb-4">
-                        <h3 className="text-lg font-semibold text-purple-600 dark:text-purple-300 mb-1 capitalize">
+                      <div key={key}>
+                        <h3 className="text-xs font-mono uppercase tracking-wider text-[#8A8A93] mb-1.5 capitalize">
                           {key.replace(/_/g, " ")}
                         </h3>
                         {typeof value === "string" ? (
-                          <div className="whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200 text-base">
+                          <div className="whitespace-pre-wrap break-words text-[#E8E8EC] text-sm leading-relaxed">
                             {value}
                           </div>
                         ) : (
-                          <pre className="whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200 text-base">
+                          <pre className="whitespace-pre-wrap break-words text-[#8A8A93] text-xs font-mono bg-[#0D0D0F] border border-white/[0.06] rounded-lg p-3">
                             {JSON.stringify(value, null, 2)}
                           </pre>
                         )}
@@ -401,7 +405,7 @@ export default function CveDetailPage() {
                   })}
                 </div>
               ) : (
-                <pre className="whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200 text-base">
+                <pre className="whitespace-pre-wrap break-words text-[#E8E8EC] text-sm font-mono bg-[#0D0D0F] border border-white/[0.06] rounded-lg p-3">
                   {typeof aiResult === "object"
                     ? JSON.stringify(aiResult, null, 2)
                     : aiResult}

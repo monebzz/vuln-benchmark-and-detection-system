@@ -31,19 +31,19 @@ import {
 import { useState } from "react";
 import { useTheme } from "next-themes";
 
-// Always-colored icons
+// Elegant minimal icons matching LineVul theme
 const iconColors: Record<string, string> = {
-  Home: "text-blue-400",
-  BarChart: "text-purple-400",
-  PieChart: "text-pink-400",
-  Building2: "text-green-400",
-  Package: "text-yellow-400",
-  AlertTriangle: "text-red-400",
-  LineChart: "text-cyan-400",
-  Calendar: "text-orange-400",
-  Database: "text-indigo-400",
-  User: "text-purple-400",
-  ShieldAlert: "text-red-500",
+  Home: "text-[#8A8A93] group-hover:text-white transition-colors",
+  BarChart: "text-[#8A8A93] group-hover:text-white transition-colors",
+  PieChart: "text-[#8A8A93] group-hover:text-white transition-colors",
+  Building2: "text-[#8A8A93] group-hover:text-white transition-colors",
+  Package: "text-[#8A8A93] group-hover:text-white transition-colors",
+  AlertTriangle: "text-[#8A8A93] group-hover:text-white transition-colors",
+  LineChart: "text-[#8A8A93] group-hover:text-white transition-colors",
+  Calendar: "text-[#8A8A93] group-hover:text-white transition-colors",
+  Database: "text-[#8A8A93] group-hover:text-white transition-colors",
+  User: "text-[#8A8A93] group-hover:text-white transition-colors",
+  ShieldAlert: "text-violet-400 group-hover:text-violet-300 transition-colors",
 };
 
 // Navigation items with "Assigner" added
@@ -117,8 +117,8 @@ const navigationItems = [
     title: "AI Tools",
     items: [
       {
-        title: "Vuln Detection System",
-        href: "/scanner",
+        title: "LineVul AI Scanner",
+        href: "/linevul",
         icon: ShieldAlert,
         iconName: "ShieldAlert",
       },
@@ -146,6 +146,7 @@ export function DashboardSidebar() {
   const [openSections, setOpenSections] = useState<string[]>([
     "Dashboard",
     "Vulnerabilities",
+    "AI Tools",
   ]);
 
   const toggleSection = (section: string) => {
@@ -156,53 +157,46 @@ export function DashboardSidebar() {
     );
   };
 
-  const sidebarBg = isDark
-    ? "bg-[rgb(28,40,55)] border-r border-white/10"
-    : "bg-[rgb(243,244,246)] border-r border-gray-300";
-  const textColor = isDark ? "text-white" : "text-gray-900";
-  const hoverBg = isDark ? "hover:bg-white/5" : "hover:bg-black/5";
-  const borderColor = isDark ? "border-white/10" : "border-gray-300";
+  const sidebarBg = "bg-[#111113] border-r border-white/[0.07]";
+  const textColor = "text-[#8A8A93]";
+  const hoverBg = "hover:bg-white/[0.04] hover:text-[#E8E8EC]";
+  const borderColor = "border-white/[0.06]";
 
   return (
     <div
       className={cn(
-        "fixed left-0 top-0 h-full transition-all duration-300 z-40 overflow-auto scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent hover:scrollbar-thumb-purple-300 hover:dark:scrollbar-thumb-purple-700 pb-12",
+        "fixed left-0 top-0 h-full transition-all duration-300 z-40 overflow-auto scrollbar-thin scrollbar-thumb-transparent scrollbar-track-transparent hover:scrollbar-thumb-white/10 pb-12",
         open ? "w-64 translate-x-0" : "w-64 -translate-x-full",
         sidebarBg,
       )}
-      style={{
-        boxShadow: "4px 0 24px rgba(0, 0, 0, 0.25)",
-        borderRadius: "0 12px 12px 0",
-      }}
     >
       {/* Header */}
       <div
-        className={`relative flex h-24 items-center justify-center px-4 border-b ${borderColor}`}
+        className={`relative flex h-20 items-center justify-center px-4 border-b ${borderColor}`}
       >
         {/* Close button for small screens */}
         <button
           type="button"
           aria-label="Close sidebar"
-          className="absolute right-3 top-3 md:hidden rounded-md p-2 hover:bg-black/5 dark:hover:bg-white/10"
+          className="absolute right-3 top-3 md:hidden rounded-lg p-2 text-[#8A8A93] hover:text-white hover:bg-white/[0.06]"
           onClick={() => setOpen(false)}
         >
-          <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+          <X className="h-5 w-5" />
         </button>
         <Link href="/" className="flex flex-col items-center group">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full scale-125" />
-            <div className="relative w-10 h-10 rounded-lg overflow-hidden">
+            <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-white/[0.08]">
               <Image
                 src="/logo.png"
                 alt="VBS Logo"
-                width={40}
-                height={40}
+                width={36}
+                height={36}
                 className="object-cover w-full h-full"
                 priority
               />
             </div>
           </div>
-          <span className="text-base font-bold text-black dark:text-white tracking-wider font-mono">
+          <span className="text-sm font-bold text-white tracking-wider font-mono mt-1">
             VBS
           </span>
         </Link>
@@ -219,7 +213,7 @@ export function DashboardSidebar() {
             >
               <CollapsibleTrigger
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-colors",
                   textColor,
                   hoverBg,
                   open ? "justify-between" : "justify-center",
@@ -230,7 +224,7 @@ export function DashboardSidebar() {
                     <span>{section.title}</span>
                     <ChevronDown
                       className={cn(
-                        "h-4 w-4 transition-transform",
+                        "h-3.5 w-3.5 transition-transform",
                         openSections.includes(section.title) && "rotate-180",
                         textColor,
                       )}
@@ -241,7 +235,7 @@ export function DashboardSidebar() {
                 )}
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="space-y-1">
+              <CollapsibleContent className="space-y-0.5 mt-1">
                 {section.items.map((item) => {
                   const isActive =
                     pathname === item.href ||
@@ -253,20 +247,28 @@ export function DashboardSidebar() {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200",
-                        hoverBg,
-                        open ? "ml-2" : "justify-center",
-                        isActive ? "font-semibold" : "font-normal",
-                        textColor,
+                        "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-150",
+                        open ? "ml-1" : "justify-center",
+                        isActive
+                          ? "bg-white/[0.08] text-white font-medium shadow-sm"
+                          : "text-[#8A8A93] hover:text-[#E8E8EC] hover:bg-white/[0.04]",
                       )}
                     >
-                      {/* Always-colored icon */}
+                      {/* Unified icon */}
                       <item.icon
-                        className={cn("h-4 w-4", iconColors[item.iconName])}
+                        className={cn(
+                          "h-4 w-4 shrink-0",
+                          isActive ? "text-white" : iconColors[item.iconName],
+                        )}
                       />
                       {open && <span>{item.title}</span>}
-                      {isActive && open && (
-                        <ChevronRight className={`h-3 w-3 ${textColor}`} />
+                      {open && item.href === "/linevul" && (
+                        <span className="ml-auto text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                          AI
+                        </span>
+                      )}
+                      {isActive && open && item.href !== "/linevul" && (
+                        <ChevronRight className="h-3 w-3 ml-auto text-white/40" />
                       )}
                     </Link>
                   );

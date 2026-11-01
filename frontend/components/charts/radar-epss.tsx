@@ -58,7 +58,7 @@ export function RadarChartEpss({
         setLoading(true);
         setServerError(false);
         const res = await fetch("/api/dashboard/cve-epss-ranges", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setServerError(true);
@@ -236,7 +236,7 @@ export function RadarChartEpss({
       <Card
         className={`${
           isDark
-            ? "bg-[rgb(29,41,56)] border-white/10"
+            ? "bg-[#111113] border-white/[0.07]"
             : "bg-white border-gray-200 shadow-sm"
         }`}
       >

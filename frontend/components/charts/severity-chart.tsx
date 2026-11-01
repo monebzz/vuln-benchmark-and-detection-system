@@ -114,7 +114,7 @@ export function SeverityChart({
           );
           url.searchParams.set("year", String(year));
 
-          const res = await fetch(url.toString(), { cache: "force-cache" });
+          const res = await fetch(url.toString(), { cache: "no-store" });
           const monthlyCounts = await res.json();
 
           console.log("Monthly Counts for year", year, monthlyCounts); // <-- shows correct year
@@ -316,7 +316,7 @@ export function SeverityChart({
     return (
       <Card
         className={`w-full ${
-          theme === "light" ? "bg-[rgb(243,244,246)]" : "bg-[rgb(29,41,56)]"
+          theme === "light" ? "bg-[rgb(243,244,246)]" : "bg-[#111113] border-white/[0.07]"
         }`}
       >
         <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">

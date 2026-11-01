@@ -31,25 +31,21 @@ export function StatCard({
   textColor,
 }: StatCardProps) {
   const router = useRouter();
-  const { theme } = useTheme();
 
-  const isDark = theme === "dark";
-
-  const getCardBg = () => {
-    if (cardBg) return cardBg;
+  const getSeverityStyle = () => {
     switch (color) {
       case "red":
-        return "rgba(255, 0, 80, 0.8)";
+        return "border-l-rose-500 bg-rose-500/[0.04]";
       case "amber":
-        return "rgba(255, 165, 0, 0.8)";
+        return "border-l-orange-500 bg-orange-500/[0.04]";
       case "green":
-        return "rgba(0, 220, 120, 0.8)";
+        return "border-l-yellow-500 bg-yellow-500/[0.04]";
       case "blue":
-        return "rgba(0, 140, 255, 0.8)";
+        return "border-l-green-500 bg-green-500/[0.04]";
       case "purple":
-        return "rgba(190, 111, 255, 0.8)";
+        return "border-l-violet-500 bg-violet-500/[0.04]";
       default:
-        return isDark ? "rgba(60, 60, 80, 0.7)" : "rgba(255, 255, 255, 0.9)";
+        return "border-l-white/20 bg-white/[0.02]";
     }
   };
 
@@ -61,75 +57,31 @@ export function StatCard({
     <Card
       onClick={handleClick}
       className={`
-        border ${isDark ? "border-white/30" : "border-black/10"}
-        rounded-2xl 
-        shadow-lg 
-        cursor-pointer 
-        transition-transform duration-500 
-        hover:scale-[1.05] 
-        hover:shadow-2xl 
-        relative overflow-hidden
+        rounded-2xl border border-white/[0.07] border-l-[3px]
+        ${getSeverityStyle()}
+        p-4 shadow-sm cursor-pointer
+        transition-all duration-150 ease-out
+        hover:border-white/[0.15] hover:bg-white/[0.06]
+        group relative overflow-hidden
       `}
-      style={{
-        background: getCardBg(),
-        WebkitBackdropFilter: "blur(15px)",
-        backdropFilter: "blur(15px)",
-      }}
     >
-      {/* Brighter moving shine */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-50"
-        style={{
-          background:
-            "linear-gradient(45deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0) 70%)",
-          backgroundSize: "200% 200%",
-          animation: "shineMove 4s ease-in-out infinite",
-        }}
-      ></div>
-
-      {/* Brighter glow */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-25"
-        style={{
-          background:
-            "radial-gradient(circle at 0% 0%, rgba(255,255,255,0.4), transparent 70%), radial-gradient(circle at 100% 100%, rgba(255,255,255,0.3), transparent 70%)",
-          backgroundSize: "200% 200%",
-          animation: "glowMotion 8s ease-in-out infinite alternate",
-        }}
-      ></div>
-
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-2 relative z-10">
         <div className="flex flex-col space-y-1">
-          <CardTitle
-            className={`text-sm font-medium ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
+          <CardTitle className="text-xs uppercase tracking-wider text-[#8A8A93] font-medium">
             {title}
           </CardTitle>
 
           {cvssRange && (
-            <p
-              className={`text-xs ${
-                isDark ? "text-gray-200" : "text-gray-600"
-              }`}
-              style={textColor ? { color: textColor } : {}}
-            >
+            <span className="text-[10px] font-mono text-[#8A8A93] border border-white/[0.07] px-1.5 py-0.5 rounded w-fit">
               CVSS: {cvssRange}
-            </p>
+            </span>
           )}
         </div>
 
         {trend && (
           <div
-            className={`flex items-center text-xs ${
-              trendUp
-                ? isDark
-                  ? "text-green-300"
-                  : "text-green-600"
-                : isDark
-                ? "text-red-300"
-                : "text-red-600"
+            className={`flex items-center text-xs font-medium ${
+              trendUp ? "text-green-400" : "text-rose-400"
             }`}
           >
             {trendUp ? (
@@ -142,37 +94,14 @@ export function StatCard({
         )}
       </CardHeader>
 
-      <CardContent className="relative z-10">
-        <div
-          className={`text-2xl font-bold ${
-            isDark ? "text-white" : "text-black"
-          }`}
-        >
+      <CardContent className="p-0 pt-1 relative z-10">
+        <div className="text-2xl font-bold tabular-nums text-white">
           {value.toLocaleString()}
         </div>
-        <p className={`${isDark ? "text-gray-200" : "text-gray-700"} text-xs`}>
+        <p className="text-xs text-[#8A8A93] mt-1">
           {description}
         </p>
       </CardContent>
-
-      <style jsx>{`
-        @keyframes shineMove {
-          0% {
-            background-position: 0% 0%;
-          }
-          100% {
-            background-position: 100% 100%;
-          }
-        }
-        @keyframes glowMotion {
-          0% {
-            background-position: 0% 0%;
-          }
-          100% {
-            background-position: 100% 100%;
-          }
-        }
-      `}</style>
     </Card>
   );
 }

@@ -20,17 +20,13 @@ export function MobileBottomNav() {
     { icon: Menu, label: "Menu", action: toggleSidebar },
   ];
 
-  const bgColor = isDark
-    ? "bg-[#1e1e1e] border-t border-gray-700"
-    : "bg-white border-t border-gray-200";
-  const activeBg = isDark
-    ? " text-purple-400"
-    : "text-purple-600 font-semibold";
-  const inactiveText = isDark ? "text-gray-400" : "text-gray-700";
+  const bgColor = "bg-[#111113] border-t border-white/[0.07]";
+  const activeBg = "text-white font-semibold";
+  const inactiveText = "text-[#8A8A93]";
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 ${bgColor} md:hidden py-3`}
+      className={`fixed bottom-0 left-0 right-0 z-50 ${bgColor} md:hidden py-2 backdrop-blur-md`}
     >
       <div className="flex items-center justify-around">
         {navItems.map((item, index) => {
@@ -40,7 +36,9 @@ export function MobileBottomNav() {
               key={index}
               variant="ghost"
               size="sm"
-              className={`flex flex-1 flex-col items-center justify-center rounded-none py-3 transition-colors duration-200`}
+              className={`flex flex-1 flex-col items-center justify-center rounded-lg py-2.5 transition-colors duration-150 ${
+                isActive ? "text-white" : "text-[#8A8A93]"
+              }`}
               onClick={() => {
                 if (item.action) {
                   item.action();
@@ -51,19 +49,11 @@ export function MobileBottomNav() {
             >
               <div className="flex justify-center items-center flex-col">
                 <item.icon
-                  className={`h-5 w-5 ${
-                    isActive
-                      ? "text-purple-500"
-                      : isDark
-                      ? "text-gray-400"
-                      : "text-gray-700"
+                  className={`h-4 w-4 ${
+                    isActive ? "text-white" : "text-[#8A8A93]"
                   }`}
                 />
-                <span
-                  className={`mt-1 text-xs ${
-                    isActive ? activeBg : inactiveText
-                  }`}
-                >
+                <span className={`mt-1 text-[11px] ${isActive ? activeBg : inactiveText}`}>
                   {item.label}
                 </span>
               </div>

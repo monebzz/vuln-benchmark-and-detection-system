@@ -43,41 +43,45 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 240 10% 4%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 240 6% 7%;
     --card-foreground: 0 0% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 5% 12%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 5% 15%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --loader-bg: 240 3% 10%;
+    --border: 0 0% 100% / 0.07;
+    --input: 0 0% 100% / 0.08;
+    --ring: 263 70% 50%;
+    --loader-bg: 240 10% 4%;
     --loader-foreground: 0 0% 98%;
 
-    /* Dashboard specific variables - Dark mode */
-    --dashboard-card-bg: 215 28% 17%;
-    --dashboard-card-border: 0 0% 100% / 0.1;
+    /* Dashboard specific variables - LineVul Minimal Dark mode */
+    --dashboard-card-bg: 240 6% 7%;
+    --dashboard-card-border: 0 0% 100% / 0.07;
     --dashboard-text-primary: 0 0% 98%;
-    --dashboard-text-secondary: 0 0% 100% / 0.7;
-    --dashboard-tab-bg: 215 28% 17%;
-    --dashboard-tab-border: 0 0% 100% / 0.1;
-    --dashboard-tab-active-bg: 289 63% 29%;
-    --dashboard-tab-text: 0 0% 100% / 0.7;
-    --dashboard-button-bg: 289 63% 29%;
-    --dashboard-button-hover-bg: 0 0% 100% / 0.1;
-    --dashboard-button-text: 0 0% 100%;
+    --dashboard-text-secondary: 240 5% 65%;
+    --dashboard-tab-bg: 240 6% 7%;
+    --dashboard-tab-border: 0 0% 100% / 0.07;
+    --dashboard-tab-active-bg: 0 0% 100%;
+    --dashboard-tab-text: 240 5% 65%;
+    --dashboard-button-bg: 0 0% 100%;
+    --dashboard-button-hover-bg: 0 0% 90%;
+    --dashboard-button-text: 240 10% 4%;
   }
 
-  html,
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     @apply overflow-x-hidden bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
   }
@@ -165,18 +169,18 @@
 /* === Glassmorphism === */
 .glassmorphism-card {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .glassmorphism-card:hover {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+  transform: translate3d(0, -2px, 0);
 }
 
 /* === Chart Containers === */
@@ -299,16 +303,25 @@ a, button, [role="button"], input, select, textarea, label, summary, [tabindex]:
   }
 }
 
-a,
-button,
+/* === 60FPS Optimized Interactions === */
 .interactive {
-  transition: all 0.3s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-a:hover,
-button:hover,
 .interactive:hover {
-  transform: translateY(-2px);
+  transform: translate3d(0, -1px, 0);
+}
+
+/* GPU Acceleration & Performance Helpers */
+.gpu-layer {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 42px;
 }
 
 .no-spinner::-webkit-outer-spin-button,
@@ -424,4 +437,35 @@ button:hover,
 
 .syntax-number {
   color: #b5cea8;
+}
+
+/* === LineVul Page Design Tokens === */
+.lv-scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.lv-scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+.lv-scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.lv-scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+.lv-no-scrollbar { scrollbar-width: none; }
+.lv-no-scrollbar::-webkit-scrollbar { display: none; }
+
+@keyframes lv-terminal-line {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lv-terminal-line {
+  animation: lv-terminal-line 0.18s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-animate-none * { animation: none !important; transition: none !important; }
 }

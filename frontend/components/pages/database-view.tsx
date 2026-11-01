@@ -39,18 +39,18 @@ export function DatabaseView() {
   };
 
   return (
-    <div className="w-full min-h-screen relative bg-[rgb(243,244,246)] dark:bg-[rgb(29,41,56)]">
+    <div className="w-full min-h-screen relative bg-[#0A0A0B]">
       <Background />
       <div className="relative z-10 flex flex-col min-h-screen">
         <DashboardHeader />
         <main className="flex-1 flex flex-col items-center justify-start px-2 md:px-8 py-6 md:py-10">
           <div className="w-full max-w-5xl">
-            <Card className="rounded-2xl shadow-lg bg-white dark:bg-[rgb(29,41,56)] border border-gray-200 dark:border-gray-700">
+            <Card className="rounded-2xl shadow-none bg-[#111113] border border-white/[0.07]">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-primary">
+                <CardTitle className="text-xl font-semibold text-white">
                   All CVE Records
                 </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-300">
+                <CardDescription className="text-xs text-[#8A8A93]">
                   Browse and search all CVE records in the database
                 </CardDescription>
               </CardHeader>

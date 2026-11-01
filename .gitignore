@@ -1,12 +1,46 @@
+# Dependencies
 node_modules/
-__pycache__/
 venv/
+.venv/
+backend/venv/
+linevul/venv/
+
+# Environment Variables
 .env
-.next/
+.env.*
+!.env.example
+!.env.*.example
+.env.local
+.env.docker.local
+
+# Python caches & build
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Next.js build
+.next/
+out/
+frontend/.next/
+frontend/node_modules/
+
+# OS & Editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Large Datasets & Model Binaries (>100MB: Share via Google Drive)
+*.sql
+*.bin
+cve_kb.json
+**/cve_kb.json
+dataset_export/
+linevul_train.zip
 uploads/
+workspace/
 joern/
 __MACOSX/
-workspace/
-*.sql

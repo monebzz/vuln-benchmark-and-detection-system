@@ -45,7 +45,7 @@ export function CvssDistributionChart({
         setLoading(true);
         setServerError(false);
         const res = await fetch("/api/dashboard/cve-score-ranges", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setServerError(true);

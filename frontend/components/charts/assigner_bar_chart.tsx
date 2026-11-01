@@ -58,7 +58,7 @@ export function AssignerBarChart({
       setServerError(false);
       try {
         const res = await fetch("/api/dashboard/cve-assigner-count?limit=12", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setServerError(true);

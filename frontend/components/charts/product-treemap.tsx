@@ -65,7 +65,7 @@ export function ProductTreemap({
         setServerError(false);
         try {
           const res = await fetch("/api/dashboard/cve-product-count?limit=10", {
-            cache: "force-cache",
+            cache: "no-store",
           });
           if (res.status === 500) {
             setServerError(true);
@@ -299,7 +299,7 @@ export function ProductTreemap({
       <Card
         className={`
           overflow-hidden rounded-2xl transition-colors duration-300 w-full border-none
-          ${isDark ? "bg-[rgb(29,41,56)]" : "bg-white  shadow-sm"}
+          ${isDark ? "bg-[#111113]" : "bg-white  shadow-sm"}
         `}
       >
         <CardContent>{renderChart()}</CardContent>

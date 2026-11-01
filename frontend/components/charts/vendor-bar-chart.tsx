@@ -58,7 +58,7 @@ export function VendorBarChart({
       setServerError(false);
       try {
         const res = await fetch("/api/dashboard/cve-vendor-count?limit=10", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setServerError(true);

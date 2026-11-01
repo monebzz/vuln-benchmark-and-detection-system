@@ -62,7 +62,7 @@ export function YearlyComparisonChart({
         setError(false);
 
         const res = await fetch("/api/dashboard/cve-yearly-count", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setError(true);

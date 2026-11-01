@@ -1,148 +1,120 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export default function InteractiveBackground() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Use a deterministic pseudo-random generator so SSR and client match exactly
-  const rand = (index: number, salt = 0) => {
-    // Mulberry32 PRNG based on a per-particle seed (index + salt)
-    let t = (index + salt + 0x6D2B79F5) >>> 0;
-    t += 0x6D2B79F5;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    const r = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    return r;
-  };
+  const orb1Ref = useRef<HTMLDivElement>(null);
+  const orb2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Skip interactive physics on reduced motion or non-hover/touch devices
+    if (
+      typeof window === "undefined" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      window.matchMedia("(pointer: coarse)").matches
+    ) {
+      return;
+    }
+
+    let animationFrameId: number | null = null;
+    let isRunning = false;
+
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX1 = targetX - 192;
+    let currentY1 = targetY - 192;
+    let currentX2 = targetX - 192;
+    let currentY2 = targetY - 192;
+
+    const updateMotion = () => {
+      // Lerp positions
+      const destX1 = targetX - 192;
+      const destY1 = targetY - 192;
+      const destX2 = window.innerWidth - targetX - 192;
+      const destY2 = targetY - 192;
+
+      currentX1 += (destX1 - currentX1) * 0.08;
+      currentY1 += (destY1 - currentY1) * 0.08;
+      currentX2 += (destX2 - currentX2) * 0.06;
+      currentY2 += (destY2 - currentY2) * 0.06;
+
+      if (orb1Ref.current) {
+        orb1Ref.current.style.transform = `translate3d(${currentX1.toFixed(1)}px, ${currentY1.toFixed(1)}px, 0)`;
+      }
+      if (orb2Ref.current) {
+        orb2Ref.current.style.transform = `translate3d(${currentX2.toFixed(1)}px, ${currentY2.toFixed(1)}px, 0)`;
+      }
+
+      // Check if settled to stop running RAF loop when mouse is stationary
+      const delta1 = Math.abs(destX1 - currentX1) + Math.abs(destY1 - currentY1);
+      const delta2 = Math.abs(destX2 - currentX2) + Math.abs(destY2 - currentY2);
+
+      if (delta1 < 0.2 && delta2 < 0.2) {
+        isRunning = false;
+        animationFrameId = null;
+      } else {
+        animationFrameId = requestAnimationFrame(updateMotion);
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const { left, top } = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - left,
-          y: e.clientY - top,
-        });
+      targetX = e.clientX;
+      targetY = e.clientY;
+
+      if (!isRunning) {
+        isRunning = true;
+        animationFrameId = requestAnimationFrame(updateMotion);
       }
     };
 
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setDimensions({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("resize", updateDimensions);
-
-    // Initial dimensions
-    updateDimensions();
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    // Initial paint
+    isRunning = true;
+    animationFrameId = requestAnimationFrame(updateMotion);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", updateDimensions);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, []);
 
-  // Generate random particles
-  const particles = Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    x: rand(i, 1) * 100,
-    y: rand(i, 2) * 100,
-    size: rand(i, 3) * 4 + 1,
-    speed: rand(i, 4) * 0.5 + 0.2,
-  }));
-
   return (
-    <div ref={containerRef} className="fixed inset-0 z-100 overflow-hidden">
-      {/* Lighter, more vibrant gradient for both light and dark modes */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-indigo-400 to-purple-400 opacity-70 dark:from-blue-600 dark:via-indigo-700 dark:to-purple-700 dark:opacity-80 transition-colors duration-500" />
+    <div
+      ref={containerRef}
+      className="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none"
+      aria-hidden="true"
+    >
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0d1627] to-[#170e28] opacity-95" />
 
-      {/* Optional: subtle white overlay for glow effect */}
-      <div className="absolute inset-0 pointer-events-none" style={{background: 'radial-gradient(circle at 60% 40%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%)'}} />
+      {/* Cyber Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#a855f70a_1px,transparent_1px),linear-gradient(to_bottom,#a855f70a_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_80%)]" />
 
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-
-      {/* Interactive gradient circles that follow mouse */}
-      <motion.div
-        className="absolute rounded-full blur-3xl opacity-20 bg-purple-500"
-        animate={{
-          x: mousePosition.x - 200,
-          y: mousePosition.y - 200,
-          scale: [1, 1.05, 1],
+      {/* Hardware-Accelerated Zero-Blur Radial Orbs (0% blur overhead, pure 60fps) */}
+      <div
+        ref={orb1Ref}
+        className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none"
+        style={{
+          transform: "translate3d(0, 0, 0)",
+          background:
+            "radial-gradient(circle, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.05) 40%, transparent 70%)",
         }}
-        transition={{
-          x: { type: "spring", stiffness: 30, damping: 25 },
-          y: { type: "spring", stiffness: 30, damping: 25 },
-          scale: {
-            duration: 8,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-          },
+      />
+      <div
+        ref={orb2Ref}
+        className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none"
+        style={{
+          transform: "translate3d(0, 0, 0)",
+          background:
+            "radial-gradient(circle, rgba(59, 130, 246, 0.20) 0%, rgba(59, 130, 246, 0.04) 40%, transparent 70%)",
         }}
-        style={{ width: "400px", height: "400px" }}
       />
 
-      <motion.div
-        className="absolute rounded-full blur-3xl opacity-20 bg-blue-500"
-        animate={{
-          x: dimensions.width - mousePosition.x - 200,
-          y: mousePosition.y - 200,
-          scale: [1.05, 1, 1.05],
-        }}
-        transition={{
-          x: { type: "spring", stiffness: 30, damping: 25 },
-          y: { type: "spring", stiffness: 30, damping: 25 },
-          scale: {
-            duration: 8,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-            delay: 0.5,
-          },
-        }}
-        style={{ width: "400px", height: "400px" }}
-      />
-
-      {/* Floating particles */}
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            opacity: particle.size / 8,
-          }}
-          animate={{
-            y: [`${particle.y}%`, `${particle.y - 20}%`],
-            x: [`${particle.x}%`, `${particle.x + (rand(particle.id, 5) * 10 - 5)}%`],
-          }}
-          transition={{
-            y: {
-              duration: 40 / particle.speed,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            },
-            x: {
-              duration: 50 / particle.speed,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            },
-          }}
-        />
-      ))}
+      {/* Subtle Ambient Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(168,85,247,0.12),_transparent_70%)]" />
     </div>
   );
 }

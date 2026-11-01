@@ -1,4 +1,3 @@
-// components/VulnerabilityCard.tsx
 import { Vulnerability } from "@/lib/type-data-dashboard";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -9,50 +8,36 @@ interface Props {
   onView?: (id: string) => void;
 }
 
-export function VulnerabilityCard({ vulnerability, onView }: Props) {
+export function VulnerabilityCard({ vulnerability }: Props) {
   const router = useRouter();
   return (
     <div
       className="
-        relative group overflow-hidden rounded-2xl border
-        bg-[hsl(var(--card)/0.7)]
-        p-4 shadow-md transition
-        backdrop-blur-xl
-        hover:shadow-xl
+        relative group overflow-hidden rounded-xl border border-white/[0.07] hover:border-white/[0.14]
+        bg-[#111113] hover:bg-[#151518]
+        p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5
       "
     >
-      {/* Purple glow layer */}
-      <div
-        className="
-          pointer-events-none absolute inset-0
-          bg-gradient-to-br
-          from-purple-600/20 via-transparent to-purple-500/10
-          opacity-60 blur-2xl
-          transition group-hover:opacity-90
-        "
-      />
-
-      {/* Inner content wrapper (keeps content sharp) */}
+      {/* Inner content wrapper */}
       <div className="relative z-10">
-        {/* Image with purple shadow */}
-        <div className="relative mb-2 w-1/4 overflow-hidden rounded-xl">
-          <div className="absolute inset-0 w-full h-full bg-purple-500/20 blur-md rounded-xl -z-10" />
+        {/* Image */}
+        <div className="relative mb-3 w-12 h-12 overflow-hidden rounded-lg bg-[#151518] border border-white/[0.06] p-1.5 flex items-center justify-center">
           <Image
             src={vulnerability.image}
             alt={vulnerability.title}
-            className="object-contain w-auto h-16"
-            width={100}
-            height={50}
+            className="object-contain w-auto h-8 transition-transform duration-200 group-hover:scale-105"
+            width={48}
+            height={48}
           />
         </div>
 
         {/* Title */}
-        <h3 className="mb-2 text-lg font-semibold text-[hsl(var(--foreground))] text-left">
+        <h3 className="mb-1 text-sm font-semibold text-white text-left">
           {vulnerability.title}
         </h3>
 
         {/* Description */}
-        <p className="mb-4 text-sm text-zinc-300 line-clamp-2 text-left">
+        <p className="mb-3 text-xs text-[#8A8A93] line-clamp-2 text-left leading-relaxed">
           {vulnerability.description}
         </p>
 
@@ -62,14 +47,13 @@ export function VulnerabilityCard({ vulnerability, onView }: Props) {
             router.push(`${vulnerability.id}`);
           }}
           className="
-            flex items-end justify-end gap-2 text-sm font-medium
-            text-blue-400 transition
-            group-hover:gap-3
-            hover:text-blue-300 text
+            flex items-center justify-end gap-1 text-xs font-mono
+            text-[#8A8A93] transition-colors duration-150
+            hover:text-white ml-auto
           "
         >
-          View details
-          <ArrowRight className="h-4 w-4" />
+          <span>View details</span>
+          <ArrowRight className="h-3 w-3 transition-transform duration-150 group-hover:translate-x-0.5" />
         </button>
       </div>
     </div>

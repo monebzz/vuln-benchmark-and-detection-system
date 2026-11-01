@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, Search } from "lucide-react";
+import Link from "next/link";
+import { Menu, Search, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
@@ -40,10 +41,10 @@ export function DashboardHeader() {
   return (
     <header
       className="
-        sticky top-0 z-30 h-16 m-2 mx-2 md:mx-8 rounded-2xl border border-transparent 
+        sticky top-0 z-30 h-16 m-2 mx-2 md:mx-8 rounded-2xl
+        border border-white/[0.07]
         transition-all duration-300
-        bg-white text-gray-900 
-        dark:bg-[rgb(29,41,56)] dark:text-white
+        bg-[#111113]/90 backdrop-blur-md text-white shadow-sm
       "
     >
       <div className="flex h-full items-center gap-4 px-4 md:px-6">
@@ -53,8 +54,7 @@ export function DashboardHeader() {
           size="icon"
           onClick={toggleSidebar}
           className="
-            text-gray-700 hover:text-gray-900 hover:bg-gray-100
-            dark:text-white/80 dark:hover:text-white dark:hover:bg-white/10
+            text-[#8A8A93] hover:text-white hover:bg-white/[0.06] rounded-xl
           "
         >
           <Menu className="h-5 w-5" />
@@ -62,7 +62,7 @@ export function DashboardHeader() {
 
         {/* Title */}
         <div className="flex-1 truncate">
-          <h1 className="text-lg md:text-xl font-semibold gradient-text-primary">
+          <h1 className="text-base md:text-lg font-semibold text-white tracking-tight">
             Vulnerability Benchmark System
           </h1>
         </div>
@@ -70,9 +70,9 @@ export function DashboardHeader() {
         {/* Search Input */}
         <div
           className="
-            hidden sm:flex items-center w-40 md:w-1/2 rounded-xl px-3 py-0
-            bg-gray-100 dark:bg-[rgb(53,65,82)] 
-            transition-all focus-within:outline-none focus-within:ring-0
+            hidden sm:flex items-center w-40 md:w-1/2 rounded-xl px-3 py-0.5
+            bg-[#0D0D0F] border border-white/[0.07]
+            transition-all focus-within:border-white/20
           "
         >
           <Input
@@ -80,11 +80,10 @@ export function DashboardHeader() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder={loading ? "Searching..." : "Search CVEs..."}
+            placeholder={loading ? "Searching..." : "Search CVEs by ID, vendor, product..."}
             className="
               w-full bg-transparent border-0 outline-none ring-0 
-              text-gray-800 placeholder:text-gray-500
-              dark:text-white dark:placeholder:text-white/60
+              text-xs text-[#E8E8EC] placeholder:text-[#8A8A93]
               focus:outline-none focus:ring-0
             "
             style={{ outline: "none", boxShadow: "none", border: "none" }}
@@ -94,11 +93,24 @@ export function DashboardHeader() {
             variant="ghost"
             onClick={() => handleSearch(query)}
             disabled={loading}
-            className="text-gray-600 dark:text-white/70 hover:bg-transparent"
+            className="text-[#8A8A93] hover:text-white hover:bg-transparent h-7 w-7"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5" />
           </Button>
         </div>
+
+        {/* AI Scanner Direct Access Pill */}
+        <Link
+          href="/linevul"
+          className="
+            hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
+            bg-violet-500/10 hover:bg-violet-500/20 text-violet-300
+            border border-violet-500/30 transition-all duration-200 shadow-sm
+          "
+        >
+          <ShieldAlert className="h-3.5 w-3.5 text-violet-400" />
+          <span>AI Scanner</span>
+        </Link>
 
         <ThemeToggle />
       </div>

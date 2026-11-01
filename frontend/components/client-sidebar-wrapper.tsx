@@ -65,7 +65,7 @@ export function ClientSidebarWrapper({
       <div className="flex min-h-screen w-full relative">
         <DashboardSidebar />
         <main
-          className={`flex-1 overflow-auto pb-16 md:pb-0 transition-all duration-300 ${
+          className={`flex-1 min-h-screen overflow-x-hidden pb-16 md:pb-0 transition-all duration-200 ${
             sidebarOpen && !isMobile ? "ml-64" : "ml-0"
           }`}
         >
@@ -75,7 +75,7 @@ export function ClientSidebarWrapper({
         {sidebarOpen && isMobile && (
           <div
             aria-hidden
-            className="fixed inset-0 z-30 bg-black/40 backdrop-blur-[1px]"
+            className="fixed inset-0 z-30 bg-black/50"
             onClick={() => setSidebarOpen(false)}
           />
         )}

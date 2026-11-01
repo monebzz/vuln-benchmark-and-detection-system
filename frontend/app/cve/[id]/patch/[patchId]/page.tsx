@@ -228,6 +228,31 @@ export default function PatchDetailView({
   );
   console.log(uniqueFiles);
 
+  // Compute diff stats (from combined metadata or directly from hunks)
+  let totalFiles = stats.totalFilesChanged || 0;
+  let additions = stats.overall?.additions || 0;
+  let deletions = stats.overall?.deletions || 0;
+
+  if (totalFiles === 0 && hunkFiles.length > 0) {
+    const filesFound = new Set<string>();
+    let addCount = 0;
+    let delCount = 0;
+    hunkFiles.forEach((hf: any) => {
+      const fc = hf.fileContent || "";
+      const fm = fc.match(/File:\s*(.+)$/m);
+      if (fm && fm[1]) filesFound.add(fm[1].trim());
+      else if (hf.fileName) filesFound.add(hf.fileName);
+      const lines = fc.split(/\r?\n/);
+      lines.forEach((l: string) => {
+        if (l.startsWith("+") && !l.startsWith("+++")) addCount++;
+        else if (l.startsWith("-") && !l.startsWith("---")) delCount++;
+      });
+    });
+    totalFiles = Math.max(1, filesFound.size);
+    additions = addCount;
+    deletions = delCount;
+  }
+
   const router = useRouter();
 
   const buttonBg = isDark
@@ -250,9 +275,15 @@ export default function PatchDetailView({
           </Button>
         </div>
         <div className={`m-4 p-6 rounded-xl border ${cardBg} mx-8`}>
-          <h2 className="text-xl font-semibold mb-6 text-purple-500">
+          <h2 className="text-xl font-semibold mb-2 text-purple-500">
             {id} / {patchId}
           </h2>
+
+          <div className="text-sm text-gray-400 mb-6">
+            <span>
+              {totalFiles} {totalFiles === 1 ? "file" : "files"} changed, {additions} insertions, {deletions} deletions
+            </span>
+          </div>
 
           <div className="space-y-6 w-full">
             {hunkFiles.map((hunk: any, idx: number) => {

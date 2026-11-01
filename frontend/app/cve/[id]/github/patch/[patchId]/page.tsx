@@ -191,6 +191,23 @@ export default function PatchDetailView({
   if (!hunkFiles.length)
     return <NoDataView isDark={isDark} message="No hunks available." />;
 
+  // Compute diff stats from hunks
+  const filesFound = new Set<string>();
+  let additions = 0;
+  let deletions = 0;
+  hunkFiles.forEach((hf: any) => {
+    const fc = hf.fileContent || "";
+    const fm = fc.match(/File:\s*(.+)$/m);
+    if (fm && fm[1]) filesFound.add(fm[1].trim());
+    else if (hf.fileName) filesFound.add(hf.fileName);
+    const lines = fc.split(/\r?\n/);
+    lines.forEach((l: string) => {
+      if (l.startsWith("+") && !l.startsWith("+++")) additions++;
+      else if (l.startsWith("-") && !l.startsWith("---")) deletions++;
+    });
+  });
+  const totalFiles = Math.max(1, filesFound.size);
+
   return (
     <>
       <Background />
@@ -208,9 +225,15 @@ export default function PatchDetailView({
         </div>
 
         <div className={`m-4 p-6 rounded-xl border ${cardBg} mx-8`}>
-          <h2 className="text-xl font-semibold mb-6 text-purple-500">
+          <h2 className="text-xl font-semibold mb-2 text-purple-500">
             {id} / {patchId}
           </h2>
+
+          <div className="text-sm text-gray-400 mb-6">
+            <span>
+              {totalFiles} {totalFiles === 1 ? "file" : "files"} changed, {additions} insertions, {deletions} deletions
+            </span>
+          </div>
 
           <div className="space-y-6 w-full">
             {hunkFiles.map((hunk: any, idx: number) => {

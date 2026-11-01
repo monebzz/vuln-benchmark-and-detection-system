@@ -31,22 +31,14 @@ export function GithubDetailView({ githubData }: any) {
     );
   }
 
-  const cardBg = isDark
-    ? "bg-[#1e1e1e] border-gray-700 text-gray-300"
-    : "bg-white border-gray-200 text-gray-700";
-  const commitCardBg = isDark
-    ? "bg-gray-800 border-gray-700"
-    : "bg-gray-50 border-gray-200";
-  const labelText = isDark ? "text-white" : "text-gray-700";
-  const valueText = isDark ? "text-white" : "text-gray-900";
-  const mutedText = isDark ? "text-gray-300" : "text-gray-600";
-  const codeBg = isDark
-    ? "bg-gray-900 border-gray-700"
-    : "bg-gray-100 border-gray-200";
-  const diffBg = isDark ? "bg-gray-900" : "bg-gray-50";
-  const buttonClass = isDark
-    ? "bg-purple-800 hover:bg-purple-900 text-white"
-    : "bg-purple-600 hover:bg-purple-700 text-white";
+  const cardBg = "bg-[#111113] border-white/[0.07] text-[#E8E8EC]";
+  const commitCardBg = "bg-[#151518] border-white/[0.06]";
+  const labelText = "text-white";
+  const valueText = "text-white";
+  const mutedText = "text-[#8A8A93]";
+  const codeBg = "bg-[#0D0D0F] border-white/[0.07]";
+  const diffBg = "bg-[#0D0D0F]";
+  const buttonClass = "bg-white text-[#0A0A0B] hover:bg-[#EAEAEA] font-semibold";
 
   return (
     <div className={`p-6 rounded-xl border ${cardBg} w-full space-y-8`}>

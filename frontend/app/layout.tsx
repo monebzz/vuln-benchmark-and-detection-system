@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ClientSidebarWrapper } from "@/components/client-sidebar-wrapper";
 import "./globals.css";
 
-const SITE_NAME = "Vulnerability Benchmark System";
+const SITE_NAME = "Vulnerability Benchmark & CVE Intelligence System";
 const SITE_URL = "https://vuln-benchmark.vercel.app";
 const SITE_DESCRIPTION =
   "Comprehensive Vulnerability Benchmark System for tracking, analyzing, and managing CVE vulnerabilities using CVSS, EPSS, vendors, products, and advanced security analytics.";

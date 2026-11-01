@@ -1,0 +1,83 @@
+services:
+  # 1. PostgreSQL Database Service
+  db:
+    image: postgres:17-alpine
+    container_name: cve_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-vulnmark}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-muneeb88}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-vulnmark}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. LineVul AI Inference Service (Port 5000)
+  linevul:
+    build:
+      context: .
+      dockerfile: linevul/Dockerfile
+    container_name: cve_linevul
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # 3. FastAPI Backend API Service (Port 8001)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: cve_backend
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-muneeb88}@db:5432/${POSTGRES_DB:-vulnmark}
+      - LINEVUL_API_URL=http://linevul:5000
+      - CVE_KB_PATH=/app/app/cve_kb.json
+      - CVE_INDEX_PATH=/app/cve_index.npy
+      - CVE_METADATA_PATH=/app/cve_index_meta.json
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      db:
+        condition: service_healthy
+      linevul:
+        condition: service_started
+
+  # 4. Next.js Frontend Web Application (Port 3000)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cve_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - LOCAL_API_BASE_URL=http://backend:8001
+      - NEXT_PUBLIC_LOCAL_API_BASE_URL=http://localhost:8001
+      - NEXT_PUBLIC_SITE_URL=http://localhost:3000
+      - NEXT_PUBLIC_LINEVUL_API_URL=http://localhost:5000
+      - LINEVUL_URL=http://linevul:5000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local

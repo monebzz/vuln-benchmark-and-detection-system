@@ -19,7 +19,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, ShieldAlert, Sparkles, Code2 } from "lucide-react";
 import { VulnerabilityHeatmap } from "./charts/vulnerability-heatmap";
 import { StatCard } from "./stat-card";
 import { PaginatedCveList } from "@/components/paginated-cve-list";
@@ -73,7 +73,7 @@ export function Dashboard() {
       try {
         setIsLoading(true);
         const allCounts = await fetch("/api/dashboard/cve-severity-count", {
-          cache: "force-cache",
+          cache: "no-store",
         }).then((res) => res.json());
 
         const mergedCounts = allCounts.reduce(
@@ -220,8 +220,8 @@ export function Dashboard() {
 
           {/* Tabs */}
           <Tabs value={activeTab} className="w-full">
-            <div className="mb-4 p-1 border rounded-2xl inline-flex flex-wrap transition-colors duration-300 h-auto bg-white dark:bg-[hsl(var(--dashboard-tab-bg))] border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none">
-              <TabsList className="bg-transparent border-none flex flex-wrap gap-2 h-auto text-gray-700 dark:text-white/70">
+            <div className="mb-4 p-1 border rounded-xl inline-flex flex-wrap transition-colors duration-150 h-auto bg-[#111113] border-white/[0.07]">
+              <TabsList className="bg-transparent border-none flex flex-wrap gap-1.5 h-auto text-[#8A8A93]">
                 {["overview", "cves", "trends", "patched"].map((tab) => (
                   <TabsTrigger
                     key={tab}
@@ -229,7 +229,7 @@ export function Dashboard() {
                     onClick={() => {
                       router.push(`/dashboard?tab=${tab}`);
                     }}
-                    className="flex-1 sm:flex-auto flex items-center justify-center px-4 py-2 rounded-xl text-sm border-none transition-colors duration-200 text-gray-700 dark:text-white/70 data-[state=active]:bg-purple-400 dark:data-[state=active]:bg-[hsl(var(--dashboard-tab-active-bg))] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+                    className="flex-1 sm:flex-auto flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium border-none transition-all duration-150 text-[#8A8A93] hover:text-white data-[state=active]:bg-white data-[state=active]:text-[#0A0A0B] data-[state=active]:font-semibold shadow-none"
                   >
                     {tab === "overview"
                       ? "Overview"
@@ -245,14 +245,46 @@ export function Dashboard() {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
+              {/* AI Vulnerability Detection Quick Launch Banner */}
+              <div className="p-5 rounded-2xl border border-white/[0.07] bg-[#111113] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/25 flex items-center justify-center shrink-0">
+                    <ShieldAlert className="h-5 w-5 text-violet-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
+                        AI Neural Engine
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-medium">
+                        CodeBERT Active
+                      </span>
+                    </div>
+                    <h3 className="text-base font-semibold text-white mt-0.5">
+                      Line-Level AI Vulnerability Scanner &amp; CVE Mapper
+                    </h3>
+                    <p className="text-xs text-[#8A8A93] mt-1 max-w-2xl leading-relaxed">
+                      Inspect C/C++ code with multi-head attention heatmaps, pinpoint vulnerable lines with CodeBERT, and map code signatures to PostgreSQL CVE benchmark records with remediation patches.
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => navigateTo("/linevul")}
+                  className="bg-white hover:bg-[#EAEAEA] active:bg-[#DFDFDF] text-[#0A0A0B] font-semibold text-xs rounded-xl px-4 h-9 shadow-sm shrink-0 transition-all duration-150"
+                >
+                  Launch AI Inspector
+                </Button>
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="border overflow-hidden rounded-2xl transition-colors duration-300 bg-white dark:bg-[hsl(var(--dashboard-card-bg))] border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none">
+                <Card className="border overflow-hidden rounded-2xl transition-colors duration-150 bg-[#111113] border-white/[0.07] shadow-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="space-y-1">
-                      <CardTitle className="text-gray-900 dark:text-white">
+                      <CardTitle className="text-sm font-semibold text-white">
                         Vulnerability by Type
                       </CardTitle>
-                      <CardDescription className="text-gray-600 dark:text-white/70">
+                      <CardDescription className="text-xs text-[#8A8A93]">
                         Distribution of Vulnerabilities by Type
                       </CardDescription>
                     </div>
@@ -260,7 +292,7 @@ export function Dashboard() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                      className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                       onClick={() => navigateTo("/by-type")}
                     >
                       <span className="hidden sm:inline">View All</span>
@@ -289,13 +321,13 @@ export function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="border overflow-hidden rounded-2xl transition-colors duration-300 bg-white dark:bg-[hsl(var(--dashboard-card-bg))] border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none">
+                <Card className="border overflow-hidden rounded-2xl transition-colors duration-150 bg-[#111113] border-white/[0.07] shadow-none">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="space-y-1">
-                      <CardTitle className="text-gray-900 dark:text-white">
+                      <CardTitle className="text-sm font-semibold text-white">
                         CVSS Score Distribution
                       </CardTitle>
-                      <CardDescription className="text-gray-600 dark:text-white/70">
+                      <CardDescription className="text-xs text-[#8A8A93]">
                         Distribution of Vulnerabilities by CVSS score
                       </CardDescription>
                     </div>
@@ -303,7 +335,7 @@ export function Dashboard() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                      className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                       onClick={() => navigateTo("/by-cvss")}
                     >
                       <span className="hidden sm:inline">View All</span>
@@ -353,7 +385,7 @@ export function Dashboard() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                      className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                       onClick={() => navigateTo("/by-vendor")}
                     >
                       <span className="hidden sm:inline">View All</span>
@@ -399,7 +431,7 @@ export function Dashboard() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                    className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                     onClick={() => navigateTo("/by-epss")}
                   >
                     <span className="hidden sm:inline">View All</span>
@@ -426,7 +458,7 @@ export function Dashboard() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                    className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                     onClick={() => navigateTo("/by-assigner")}
                   >
                     <span className="hidden sm:inline">View All</span>
@@ -453,7 +485,7 @@ export function Dashboard() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs rounded-xl flex items-center bg-purple-400 dark:bg-[hsl(var(--dashboard-button-bg))] hover:bg-purple-500 dark:hover:bg-white/10 text-gray-800 dark:text-white"
+                    className="text-xs rounded-lg flex items-center hover:bg-white/[0.06] text-[#8A8A93] hover:text-white border border-white/[0.07] h-7 px-2.5 transition-colors"
                     onClick={() => navigateTo("/by-product")}
                   >
                     <span className="hidden sm:inline">View All</span>

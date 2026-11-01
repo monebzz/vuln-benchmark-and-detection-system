@@ -61,24 +61,18 @@ export default function FeatureCarousel() {
 
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
+      x: direction > 0 ? 250 : -250,
       opacity: 0,
-      scale: 0.8,
-      rotateY: direction > 0 ? 45 : -45,
     }),
     center: {
       zIndex: 1,
       x: 0,
       opacity: 1,
-      scale: 1,
-      rotateY: 0,
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
+      x: direction < 0 ? 250 : -250,
       opacity: 0,
-      scale: 0.8,
-      rotateY: direction < 0 ? 45 : -45,
     }),
   };
 
@@ -121,33 +115,31 @@ export default function FeatureCarousel() {
     >
       {/* Background glow effect */}
       <div
-        className="absolute inset-0 transition-all duration-1000"
+        className="absolute inset-0 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at center, ${currentSlide.shadowColor} 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse at center, rgba(139, 92, 246, 0.05) 0%, transparent 65%)`,
         }}
       />
 
       {/* Section Header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-12 relative z-10"
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className="text-center mb-10 relative z-10"
       >
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-            Enterprise Security
-          </span>{" "}
-          Features
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+          Enterprise Security Features
         </h2>
-        <p className="text-xl text-white/90 max-w-2xl mx-auto">
-          Advanced capabilities designed for modern cybersecurity operations
+        <p className="text-sm text-[#8A8A93] max-w-xl mx-auto">
+          Advanced capabilities designed for modern cybersecurity operations and automated mitigation.
         </p>
       </motion.div>
 
       {/* Main Carousel Container */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8">
-        <div className="relative h-[420px] md:h-[480px] perspective-1000">
+      <div className="relative max-w-6xl mx-auto px-4 md:px-6">
+        <div className="relative h-[380px] md:h-[440px]">
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={currentIndex}
@@ -157,14 +149,12 @@ export default function FeatureCarousel() {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 },
-                scale: { duration: 0.4 },
-                rotateY: { duration: 0.4 },
+                x: { type: "spring", stiffness: 280, damping: 28 },
+                opacity: { duration: 0.25 },
               }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={1}
+              dragElastic={0.4}
               onDragEnd={(e, { offset, velocity }) => {
                 const swipe = swipePower(offset.x, velocity.x);
                 if (swipe < -swipeConfidenceThreshold) {
@@ -177,10 +167,7 @@ export default function FeatureCarousel() {
             >
               {/* Slide Card - Full Width Image Background */}
               <div
-                className="relative h-full w-full rounded-2xl md:rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing group"
-                style={{
-                  boxShadow: `0 30px 100px -20px ${currentSlide.shadowColor}, 0 0 60px -10px ${currentSlide.shadowColor}`,
-                }}
+                className="relative h-full w-full rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing group border border-white/[0.08] bg-[#111113] shadow-xl"
               >
                 {/* Full Background Image */}
                 <div className="absolute inset-0">
@@ -188,56 +175,46 @@ export default function FeatureCarousel() {
                     src={currentSlide.image}
                     alt={currentSlide.title}
                     fill
-                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     priority
                     sizes="(max-width: 768px) 100vw, 1280px"
                   />
                 </div>
 
-                {/* Left side blur overlay for text readability */}
+                {/* Left side gradient overlay for text readability */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-r via-transparent to-transparent"
+                  className="absolute inset-0 bg-gradient-to-r via-transparent to-transparent pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to right, rgb(29, 41, 56) 0%, rgba(29, 41, 56, 0.95) 25%, rgba(29, 41, 56, 0.7) 45%, transparent 65%)",
+                      "linear-gradient(to right, #111113 0%, rgba(17, 17, 19, 0.96) 35%, rgba(17, 17, 19, 0.75) 55%, transparent 75%)",
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent backdrop-blur-[1px] [mask-image:linear-gradient(to_right,black_0%,black_40%,transparent_60%)]" />
 
                 {/* Subtle gradient overlay on right for depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
-
-                {/* Top accent line */}
-                <div
-                  className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${currentSlide.gradient} opacity-80`}
-                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
                 {/* Content Container */}
                 <div className="relative h-full flex items-center">
-                  <div className="w-full md:w-3/5 lg:w-1/2 p-6 md:p-10 lg:p-14">
+                  <div className="w-full md:w-3/5 lg:w-1/2 p-6 md:p-10 lg:p-12">
                     {/* Slide indicator */}
                     <motion.div
-                      className="flex items-center gap-3 mb-6"
+                      className="flex items-center gap-2.5 mb-4"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2, duration: 0.5 }}
                     >
-                      <span
-                        className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${currentSlide.gradient} bg-clip-text text-transparent`}
-                      >
+                      <span className="text-xl md:text-2xl font-mono font-bold text-white">
                         0{currentIndex + 1}
                       </span>
-                      <div
-                        className={`h-[2px] w-12 bg-gradient-to-r ${currentSlide.gradient}`}
-                      />
-                      <span className="text-sm text-white/50 font-medium tracking-wider">
-                        OF 0{carouselSlides.length}
+                      <div className="h-[1px] w-8 bg-white/20" />
+                      <span className="text-xs font-mono text-[#8A8A93]">
+                        0{carouselSlides.length}
                       </span>
                     </motion.div>
 
                     {/* Title */}
                     <motion.h3
-                      className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight tracking-tight"
+                      className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 md:mb-4 leading-tight tracking-tight"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3, duration: 0.5 }}
@@ -247,7 +224,7 @@ export default function FeatureCarousel() {
 
                     {/* Description */}
                     <motion.p
-                      className="text-sm md:text-base lg:text-lg text-white/80 leading-relaxed mb-6 md:mb-8 max-w-lg"
+                      className="text-xs md:text-sm text-[#8A8A93] leading-relaxed mb-6 max-w-md"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
@@ -257,7 +234,7 @@ export default function FeatureCarousel() {
 
                     {/* Feature pills */}
                     <motion.div
-                      className="flex flex-wrap gap-2 md:gap-3"
+                      className="flex flex-wrap gap-2"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5, duration: 0.5 }}
@@ -269,8 +246,7 @@ export default function FeatureCarousel() {
                       ].map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-full border border-purple-400/40 text-white/90 transition-all duration-300 hover:border-purple-400/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.2)]"
-                          style={{ backgroundColor: "rgba(29, 41, 56, 0.9)" }}
+                          className="px-2.5 py-1 text-xs font-mono rounded-md border border-white/[0.08] text-[#8A8A93] bg-[#151518]"
                         >
                           {tag}
                         </span>
@@ -278,16 +254,6 @@ export default function FeatureCarousel() {
                     </motion.div>
                   </div>
                 </div>
-
-                {/* Bottom gradient fade */}
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent`}
-                />
-
-                {/* Corner accent */}
-                <div
-                  className={`absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl ${currentSlide.gradient} opacity-20 blur-3xl`}
-                />
               </div>
             </motion.div>
           </AnimatePresence>
@@ -296,60 +262,46 @@ export default function FeatureCarousel() {
         {/* Navigation Arrows */}
         <button
           onClick={() => paginate(-1)}
-          className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 md:p-4 rounded-full border border-purple-500/30 text-white hover:border-purple-400/60 hover:scale-110 transition-all duration-300 shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] hover:shadow-[0_15px_50px_-10px_rgba(147,51,234,0.4)] group"
-          style={{ backgroundColor: "rgb(29, 41, 56)" }}
+          className="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full border border-white/[0.08] bg-[#151518]/90 text-[#8A8A93] hover:text-white hover:bg-white/[0.08] transition-all group"
         >
-          <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 group-hover:-translate-x-0.5 transition-transform" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
 
         <button
           onClick={() => paginate(1)}
-          className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 md:p-4 rounded-full border border-purple-500/30 text-white hover:border-purple-400/60 hover:scale-110 transition-all duration-300 shadow-[0_10px_40px_-10px_rgba(147,51,234,0.3)] hover:shadow-[0_15px_50px_-10px_rgba(147,51,234,0.4)] group"
-          style={{ backgroundColor: "rgb(29, 41, 56)" }}
+          className="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full border border-white/[0.08] bg-[#151518]/90 text-[#8A8A93] hover:text-white hover:bg-white/[0.08] transition-all group"
         >
-          <ChevronRight className="h-5 w-5 md:h-6 md:w-6 group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 
       {/* Dot Indicators */}
-      <div className="flex justify-center items-center gap-3 mt-8 relative z-10">
+      <div className="flex justify-center items-center gap-2 mt-6 relative z-10">
         {carouselSlides.map((slide, index) => (
           <button
             key={slide.id}
             onClick={() => goToSlide(index)}
-            className="relative group"
+            className="p-1"
           >
-            {/* Outer glow ring for active */}
-            {index === currentIndex && (
-              <motion.div
-                layoutId="activeDot"
-                className={`absolute -inset-2 rounded-full bg-gradient-to-r ${slide.gradient} opacity-30 blur-md`}
-              />
-            )}
-
-            {/* Dot */}
-            <motion.div
+            <div
               className={cn(
-                "relative w-3 h-3 rounded-full transition-all duration-300",
+                "w-2 h-2 rounded-full transition-all duration-200",
                 index === currentIndex
-                  ? `bg-gradient-to-r ${slide.gradient} scale-125`
-                  : "bg-white/30 hover:bg-white/50"
+                  ? "bg-white scale-125"
+                  : "bg-white/20 hover:bg-white/40"
               )}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
             />
           </button>
         ))}
       </div>
 
       {/* Progress Bar */}
-      <div className="max-w-md mx-auto mt-6 relative z-10">
+      <div className="max-w-xs mx-auto mt-4 relative z-10">
         <div
-          className="h-1.5 rounded-full overflow-hidden border border-purple-500/20"
-          style={{ backgroundColor: "rgb(29, 41, 56)" }}
+          className="h-1 rounded-full overflow-hidden bg-[#151518] border border-white/[0.06]"
         >
           <motion.div
-            className={`h-full bg-gradient-to-r ${currentSlide.gradient}`}
+            className="h-full bg-white/40"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 5, ease: "linear" }}

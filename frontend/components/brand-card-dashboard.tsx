@@ -16,27 +16,27 @@ export function BrandCard({ brand }: Props) {
       }}
       className="
         group relative flex items-center justify-center
-        rounded-full px-8 py-3
-        bg-gradient-to-r from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.05)]
-        shadow-md backdrop-blur-lg
-        transition hover:shadow-lg hover:scale-105
-        cursor-pointer
-
+        rounded-xl px-5 py-2.5
+        bg-[#111113] hover:bg-[#151518]
+        border border-white/[0.07] hover:border-white/[0.14]
+        shadow-sm
+        transition-all duration-200 hover:-translate-y-0.5
+        cursor-pointer select-none
       "
     >
       {/* Icon */}
-      <div className="flex items-center justify-center mr-2">
+      <div className="flex items-center justify-center mr-2.5 shrink-0">
         <Image
           src={brand.image}
           alt={brand.name}
           className="object-contain"
-          width={35}
-          height={30}
+          width={24}
+          height={24}
         />
       </div>
 
       {/* Name */}
-      <h3 className="text-md font-bold text-[hsl(var(--foreground))]">
+      <h3 className="text-xs font-semibold text-white tracking-wide">
         {brand.name}
       </h3>
     </div>

@@ -2,12 +2,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { CveRecord } from "@/types/cveRecordData";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Background from "@/components/background";
 import LoaderScreen from "../loading";
 
@@ -64,18 +62,18 @@ export default function SearchResultPage() {
     if (page < totalPages) setPage((p) => p + 1);
   };
 
-  const getSeverityColor = (severity?: string | null) => {
+  const getSeverityBadge = (severity?: string | null) => {
     switch (severity?.toLowerCase()) {
       case "critical":
-        return "bg-red-500 hover:bg-red-600 text-white";
+        return "bg-rose-500/10 border-rose-500/25 text-rose-400";
       case "high":
-        return "bg-orange-500 hover:bg-orange-600 text-white";
+        return "bg-orange-500/10 border-orange-500/25 text-orange-400";
       case "medium":
-        return "bg-yellow-500 hover:bg-yellow-600 text-black";
+        return "bg-amber-500/10 border-amber-500/25 text-amber-400";
       case "low":
-        return "bg-green-500 hover:bg-green-600 text-white";
+        return "bg-emerald-500/10 border-emerald-500/25 text-emerald-400";
       default:
-        return "bg-gray-400 hover:bg-gray-500 text-white";
+        return "bg-white/[0.05] border-white/10 text-[#8A8A93]";
     }
   };
 
@@ -147,7 +145,6 @@ export default function SearchResultPage() {
     return { severity, cvssScore, cvssVector, cvssVersion };
   };
 
-  const isLight = theme === "light";
   return (
     <div className="w-full min-h-screen relative">
       <Background />
@@ -157,17 +154,24 @@ export default function SearchResultPage() {
           {loading ? (
             <LoaderScreen />
           ) : records.length === 0 ? (
-            <p className="text-center text-gray-400">
-              No CVE records found for “{query}”.
-            </p>
+            <div className="py-20 text-center">
+              <p className="text-sm font-mono text-[#8A8A93]">
+                No CVE records found for &ldquo;{query}&rdquo;.
+              </p>
+            </div>
           ) : (
-            <div className="flex flex-col space-y-3">
-              <h1 className="text-2xl font-bold mb-4 px-2">
-                Search Results for:{" "}
-                <span className={isLight ? "text-blue-600" : "text-purple-400"}>
-                  {query}
+            <div className="flex flex-col space-y-3 max-w-6xl mx-auto">
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-xl font-bold text-white tracking-tight">
+                  Search Results for:{" "}
+                  <span className="font-mono text-zinc-300">
+                    &ldquo;{query}&rdquo;
+                  </span>
+                </h1>
+                <span className="text-xs font-mono text-[#8A8A93]">
+                  {totalCount.toLocaleString()} matching records
                 </span>
-              </h1>
+              </div>
               {records.map((record) => {
                 const { severity, cvssScore, cvssVector, cvssVersion } =
                   getCvssData(record);
@@ -175,113 +179,110 @@ export default function SearchResultPage() {
                   <div
                     key={record.cveid}
                     onClick={() => router.push(`/cve/${record.cveid}`)}
-                    className={`p-3 rounded-lg cursor-pointer shadow-sm border-b transition bg-[rgb(243,244,246)] hover:bg-gray-200 dark:bg-[rgb(40,51,65)] dark:hover:bg-[rgb(53,65,82)]`}
+                    className="p-4 rounded-xl cursor-pointer border border-white/[0.07] hover:border-white/[0.14] transition-all bg-[#111113] hover:bg-[#151518]"
                   >
-                    <div className="flex justify-between items-start">
+                    <div className="flex justify-between items-start gap-4 mb-2">
                       <div>
-                        <h3 className="font-mono text-base font-bold text-primary">
+                        <h3 className="font-mono text-sm font-bold text-white hover:underline">
                           {record.cveid}
                         </h3>
                         {isValidValue(record.title) && (
-                          <p className="text-sm text-black dark:text-white">
+                          <p className="text-sm text-zinc-200 mt-0.5">
                             {record.title}
                           </p>
                         )}
                       </div>
-                      <div className="flex flex-row gap-1">
-                        <div>
-                          {isValidValue(severity) && (
-                            <Badge className={getSeverityColor(severity)}>
-                              {severity}
-                            </Badge>
-                          )}
-                        </div>
-                        <div>
-                          {record.patched && (
-                            <Badge className="bg-green-600 text-white text-sm">
-                              Patched
-                            </Badge>
-                          )}
-                        </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {isValidValue(severity) && (
+                          <span className={`inline-flex items-center px-2 py-0.5 text-xs font-mono font-medium rounded border ${getSeverityBadge(severity)}`}>
+                            {severity}
+                          </span>
+                        )}
+                        {record.patched && (
+                          <span className="inline-flex items-center px-2 py-0.5 text-xs font-mono font-medium rounded border bg-emerald-500/10 border-emerald-500/25 text-emerald-400">
+                            Patched
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     {isValidValue(record.description) && (
-                      <p className="text-sm mt-1 line-clamp-2 mb-2 text-black dark:text-white">
+                      <p className="text-xs text-[#8A8A93] line-clamp-2 mb-3 leading-relaxed">
                         {record.description}
                       </p>
                     )}
 
                     {/* Metadata badges */}
-                    <div className="flex flex-wrap gap-2 items-center text-xs">
+                    <div className="flex flex-wrap gap-1.5 items-center text-xs">
                       {isValidValue(record.assigner) && (
-                        <Badge variant="outline">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
                           Assigner: {record.assigner}
-                        </Badge>
+                        </span>
                       )}
                       {isValidValue(record.category_type) && (
-                        <Badge variant="outline">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
                           Type: {record.category_type}
-                        </Badge>
+                        </span>
                       )}
                       {isValidValue(record.datepublished) && (
-                        <Badge variant="default">
-                          Date:{" "}
-                          {new Date(record.datepublished).toLocaleDateString()}
-                        </Badge>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
+                          Date: {new Date(record.datepublished).toLocaleDateString()}
+                        </span>
                       )}
                       {isValidValue(cvssScore) && (
-                        <Badge variant="outline">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
                           CVSS: {formatValue(cvssScore)}
-                        </Badge>
+                        </span>
                       )}
                       {isValidValue(cvssVersion) && (
-                        <Badge variant="outline">
-                          CVSS Version: {cvssVersion}
-                        </Badge>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
+                          v{cvssVersion}
+                        </span>
                       )}
                       {isValidValue(cvssVector) && (
-                        <Badge variant="outline">
-                          CVSS Vector: {cvssVector}
-                        </Badge>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
+                          Vector: {cvssVector}
+                        </span>
                       )}
                       {isValidValue(record.epss_score) && (
-                        <Badge variant="outline">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
                           EPSS: {formatValue(record.epss_score)}
-                        </Badge>
+                        </span>
                       )}
                       {isValidValue(record.vendor) && (
-                        <Badge variant="outline">Vendor: {record.vendor}</Badge>
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
+                          Vendor: {record.vendor}
+                        </span>
                       )}
                       {isValidValue(record.product) && (
-                        <Badge variant="outline">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-mono text-[#8A8A93] bg-[#0D0D0F] border border-white/[0.06]">
                           Product: {record.product}
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>
                 );
               })}
-              {/* 🔄 Pagination */}
-              <div className="flex flex-col items-center justify-center mt-6 space-y-2">
-                <div className="text-sm text-gray-400">
+              {/* Pagination */}
+              <div className="flex flex-col items-center justify-center pt-6 space-y-2">
+                <div className="text-xs font-mono text-[#8A8A93]">
                   Page {page} of {totalPages} ({totalCount} results)
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                   <Button
                     size="sm"
                     onClick={handlePreviousPage}
                     disabled={page === 1}
-                    className="rounded-full px-3 py-1 text-sm"
+                    className="h-8 px-2.5 rounded-lg border border-white/[0.08] bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white disabled:opacity-40"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="font-medium">{page}</span>
+                  <span className="text-xs font-mono font-medium text-white px-2">{page}</span>
                   <Button
                     size="sm"
                     onClick={handleNextPage}
                     disabled={page >= totalPages}
-                    className="rounded-full px-3 py-1 text-sm"
+                    className="h-8 px-2.5 rounded-lg border border-white/[0.08] bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white disabled:opacity-40"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>

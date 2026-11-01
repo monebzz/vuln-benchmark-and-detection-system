@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LineVul | AI Code Vulnerability Inspector</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="background-decorations">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-icon-wrapper">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+            </div>
+            <div class="logo-text">
+                <span class="logo-title">LineVul</span>
+                <span class="logo-subtitle">Deep Learning Line-Level Vulnerability Predictor</span>
+            </div>
+        </div>
+        <div class="header-status">
+            <span class="status-indicator online"></span>
+            <span class="status-label">Model Engine Active</span>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <section class="panel editor-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-code icon-primary"></i>
+                    <h2>C/C++ Source Inspector</h2>
+                </div>
+                <div class="panel-actions">
+                    <input type="file" id="file-upload" accept=".c,.cpp,.h,.cc,.cxx,.hpp" style="display:none;" />
+                    <button class="btn btn-secondary" id="btn-upload">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload File
+                    </button>
+                    <button class="btn btn-secondary" id="btn-clear">
+                        <i class="fa-solid fa-eraser"></i> Clear
+                    </button>
+                    <button class="btn btn-secondary" id="btn-load-sample">
+                        <i class="fa-solid fa-folder-open"></i> Sample Code
+                    </button>
+                </div>
+            </div>
+            
+            <div class="editor-container">
+                <textarea id="code-input" placeholder="Paste C/C++ function code here or click 'Upload File' to scan for vulnerabilities..." spellcheck="false"></textarea>
+            </div>
+
+            <div class="panel-footer">
+                <span id="file-indicator" style="font-size: 13px; color: var(--text-secondary); display: none;">
+                    <i class="fa-solid fa-file-code"></i> <span id="file-name"></span>
+                </span>
+                <button class="btn btn-primary" id="btn-scan" style="margin-left: auto;">
+                    <span>Analyze Code</span>
+                    <i class="fa-solid fa-circle-notch fa-spin btn-loader"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles btn-icon"></i>
+                </button>
+            </div>
+
+            <!-- Remediation Patch Card -->
+            <div id="patch-card" style="display: none; margin-top: 1rem; background: rgba(16, 21, 35, 0.9); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.6rem; margin-bottom: 0.6rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-code-commit" style="color: #34d399; font-size: 1.1rem;"></i>
+                        <span style="font-weight: 700; font-size: 0.95rem; color: #fff;">Remediation Patch</span>
+                        <span id="patch-cve-badge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; padding: 1px 8px; border-radius: 999px; font-size: 0.72rem; font-family: var(--font-mono);"></span>
+                    </div>
+                    <button id="btn-copy-patch" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;">
+                        <i class="fa-solid fa-copy"></i> Copy Patch
+                    </button>
+                </div>
+                <div id="patch-diff-container" style="background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5; color: #e2e8f0; max-height: 320px; overflow-y: auto; white-space: pre;">
+                </div>
+            </div>
+        </section>
+
+        <section class="panel results-panel" id="results-panel">
+            <!-- Initial State Placeholder -->
+            <div class="results-placeholder" id="placeholder-view">
+                <div class="placeholder-icon-wrapper">
+                    <i class="fa-solid fa-chart-line placeholder-icon"></i>
+                </div>
+                <h3>Analysis Results</h3>
+                <p>Submit a C/C++ function or upload a source file to get a full vulnerability report and line-level risk highlights.</p>
+            </div>
+
+            <!-- Loading View -->
+            <div class="results-loading hidden" id="loading-view">
+                <div class="spinner-container">
+                    <div class="loader-ring"></div>
+                    <div class="loader-dot"></div>
+                </div>
+                <h3>Deep Neural Model Running</h3>
+                <p>Tokenizing code and computing 12-head multi-layer attention attributions...</p>
+            </div>
+
+            <!-- Full Report View -->
+            <div class="results-content hidden" id="content-view">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-square-poll-vertical icon-primary"></i>
+                        <h2>Vulnerability Assessment</h2>
+                    </div>
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary" id="btn-export">
+                            <i class="fa-solid fa-download"></i> Export JSON
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Risk Cards Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card" id="card-verdict">
+                        <div class="stat-icon-box bg-safe">
+                            <i class="fa-solid fa-circle-check verdict-icon"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Prediction Verdict</span>
+                            <span class="stat-value" id="val-verdict">SECURE</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-box bg-probability">
+                            <i class="fa-solid fa-gauge-high"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Vulnerability Risk</span>
+                            <span class="stat-value" id="val-prob">0.0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Gauge -->
+                <div class="gauge-container">
+                    <div class="gauge-bar-bg">
+                        <div class="gauge-bar-fill" id="gauge-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Mapped CVE Card -->
+                <div id="cve-card" style="display: none; background: rgba(16, 21, 35, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 14px; padding: 1.25rem; margin-top: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <i class="fa-solid fa-book-skull" style="color: #b985ee; font-size: 1.2rem;"></i>
+                            <span style="font-weight: 800; font-size: 1.15rem; color: #fff; font-family: var(--font-mono);" id="val-cve-id">CVE-2018-3864</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span id="val-cve-severity" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;">CRITICAL</span>
+                            <span id="val-cve-cwe" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">CWE-120</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #d8b4fe; margin-bottom: 0.6rem;">
+                        <strong>Detection Mapping Rationale:</strong> <span id="val-cve-reason">Stack-based buffer overflow via strcpy</span>
+                    </div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.4rem; font-weight: 600;">
+                        Complete CVE Description
+                    </div>
+                    <div id="val-cve-desc" style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 1rem; font-size: 0.88rem; line-height: 1.6; color: #e2e8f0;">
+                        Description text
+                    </div>
+                </div>
+
+                <!-- Line Level Inspector -->
+                <div class="line-level-section">
+                    <div class="section-title">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <h3>Line Attribution Visualizer</h3>
+                    </div>
+                    <p class="section-desc">Lines with red overlays indicate high model attention weights, pinpointing predicted vulnerability locations.</p>
+                    
+                    <div class="code-visualizer-wrapper">
+                        <div class="code-visualizer" id="code-visualizer">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 LineVul Deep Learning Vulnerability Predictor &bull; Dedicated Vulnerability Inspection Module</p>
+    </footer>
+
+    <!-- Custom Logic -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

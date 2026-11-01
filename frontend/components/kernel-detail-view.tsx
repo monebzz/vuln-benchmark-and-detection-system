@@ -13,23 +13,15 @@ export function KernelDetailView({ kernalData, cveid }: any) {
   const router = useRouter();
 
   // Theme classes
-  const containerBg = isDark
-    ? "bg-gray-950 text-white"
-    : "bg-gray-50 text-gray-900";
-  const cardBg = isDark
-    ? "bg-gray-800 border-gray-700"
-    : "bg-white border-gray-200";
-  const labelText = isDark ? "text-white" : "text-gray-700";
-  const valueText = isDark ? "text-white" : "text-gray-900";
-  const borderColor = isDark ? "border-gray-700" : "border-gray-200";
-  const summaryText = isDark ? "text-gray-400" : "text-gray-600";
-  const diffBg = isDark
-    ? "bg-gray-800 border-gray-700"
-    : "bg-gray-50 border-gray-200";
-  const lineText = isDark ? "text-gray-300" : "text-gray-700";
-  const buttonClass = isDark
-    ? "bg-purple-800 hover:bg-purple-900 text-white"
-    : "bg-purple-600 hover:bg-purple-700 text-white";
+  const containerBg = "bg-[#0A0A0B] text-[#E8E8EC]";
+  const cardBg = "bg-[#111113] border border-white/[0.07]";
+  const labelText = "text-white";
+  const valueText = "text-white";
+  const borderColor = "border-white/[0.06]";
+  const summaryText = "text-[#8A8A93]";
+  const diffBg = "bg-[#0D0D0F] border border-white/[0.07]";
+  const lineText = "text-[#A8B5C8]";
+  const buttonClass = "bg-white text-[#0A0A0B] hover:bg-[#EAEAEA] font-semibold";
 
   return (
     <div
@@ -37,10 +29,28 @@ export function KernelDetailView({ kernalData, cveid }: any) {
     >
       {fullKernelData.map((patch: any, index: number) => {
         const ref = patch.referenceData ?? patch.patchObj?.referenceData ?? {};
-        const stats = patch.combinedSummaries[0];
+        let stats = patch.combinedSummaries?.[0];
         const referenceLink =
           patch.referenceLink ?? patch.patchObj?.referenceLink ?? null;
-        const diffs = patch.diffs;
+        const diffs = patch.diffs || [];
+
+        if ((!stats || (!stats.totalFilesChanged && !stats.overall?.additions && !stats.overall?.deletions)) && diffs.length > 0) {
+          let adds = 0;
+          let dels = 0;
+          const filesSet = new Set<string>();
+          diffs.forEach((d: any) => {
+            if (d.fileName) filesSet.add(d.fileName);
+            const lines = (d.diff || "").split(/\r?\n/);
+            lines.forEach((l: string) => {
+              if (l.startsWith("+") && !l.startsWith("+++")) adds++;
+              else if (l.startsWith("-") && !l.startsWith("---")) dels++;
+            });
+          });
+          stats = {
+            totalFilesChanged: Math.max(1, filesSet.size),
+            overall: { additions: adds, deletions: dels },
+          };
+        }
 
         // Show functions view by default since it contains the actual code for kernel patches
         const showPatch = true;

@@ -82,7 +82,7 @@ export function TrendLineChart({ height = 300 }: TrendLineChartProps) {
         setServerError(false);
 
         const res = await fetch("/api/dashboard/cve-yearly-count", {
-          cache: "force-cache",
+          cache: "no-store",
         });
         if (res.status === 500) {
           setServerError(true);

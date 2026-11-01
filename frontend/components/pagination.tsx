@@ -62,7 +62,7 @@ export function Pagination({
     return showInfo ? (
       <div
         className={cn(
-          "flex justify-center text-sm text-muted-foreground",
+          "flex justify-center text-xs text-[#8A8A93] font-mono",
           className
         )}
       >
@@ -79,21 +79,21 @@ export function Pagination({
       )}
     >
       {showInfo && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-xs text-[#8A8A93] font-mono">
           Showing {startItem.toLocaleString()} to {endItem.toLocaleString()} of{" "}
           {totalItems.toLocaleString()} results
         </div>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {/* Previous Button */}
         <Button
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className="h-9 px-3 bg-[rgb(53,65,82)] text-white rounded-xl"
+          className="h-8 px-2.5 bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white border border-white/[0.08] rounded-lg disabled:opacity-40 disabled:hover:bg-[#151518] text-xs font-mono"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" />
           <span className="hidden sm:inline ml-1">Prev</span>
         </Button>
 
@@ -102,18 +102,18 @@ export function Pagination({
           {getPageNumbers().map((page, index) => (
             <React.Fragment key={index}>
               {page === "..." ? (
-                <div className="flex h-9 w-9 items-center justify-center">
-                  <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                <div className="flex h-8 w-8 items-center justify-center">
+                  <MoreHorizontal className="h-3.5 w-3.5 text-[#8A8A93]" />
                 </div>
               ) : (
                 <Button
                   size="sm"
                   onClick={() => onPageChange(page as number)}
                   className={cn(
-                    "h-9 w-9 rounded-xl",
+                    "h-8 w-8 rounded-lg font-mono text-xs transition-colors",
                     currentPage === page
-                      ? "bg-[rgb(86,27,122)] text-white"
-                      : "bg-[rgb(53,65,82)] text-white"
+                      ? "bg-white hover:bg-[#EAEAEA] text-[#0A0A0B] font-semibold shadow-sm"
+                      : "bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white border border-white/[0.08]"
                   )}
                 >
                   {page}
@@ -128,15 +128,15 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="h-9 px-3 bg-[rgb(53,65,82)] text-white rounded-xl"
+          className="h-8 px-2.5 bg-[#151518] hover:bg-white/[0.08] text-[#8A8A93] hover:text-white border border-white/[0.08] rounded-lg disabled:opacity-40 disabled:hover:bg-[#151518] text-xs font-mono"
         >
           <span className="hidden sm:inline mr-1">Next</span>
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </Button>
 
         {/* Jump to Page */}
         {totalPages > 3 && (
-          <form onSubmit={handleJumpSubmit} className="flex items-center gap-1">
+          <form onSubmit={handleJumpSubmit} className="flex items-center gap-1 ml-1">
             <input
               type="number"
               value={jumpPage}
@@ -146,7 +146,7 @@ export function Pagination({
               placeholder="Go"
               min={1}
               max={totalPages}
-              className="w-14 h-9 rounded-xl border px-2 bg-[rgb(53,65,82)] text-white text-sm"
+              className="w-12 h-8 rounded-lg border border-white/[0.08] px-2 bg-[#0D0D0F] text-white text-xs font-mono outline-none focus:border-white/20"
             />
           </form>
         )}
